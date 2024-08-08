@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: screenPage
-            ? const WebPage()
+            ? const Home()
             : const Home(),
       );
   }

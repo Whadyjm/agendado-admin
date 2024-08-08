@@ -20,7 +20,7 @@ class Bento extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.shade400,
+              color: Colors.grey.shade300,
               blurRadius: 5,
               spreadRadius: 5,
               offset: const Offset(2.5, 2.5)

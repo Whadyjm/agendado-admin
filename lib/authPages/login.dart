@@ -103,20 +103,20 @@ class _LoginState extends State<Login> {
                   }
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Checkbox(
-                    value: true,
-                    onChanged: (value){},
-                    activeColor: AppConstants.green,),
-                  GestureDetector(
-                      child: const Text('Recordar contraseña', style: TextStyle(fontSize: 15, color: AppConstants.green, fontWeight: FontWeight.w600),)),
-                ],
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.start,
+            //     children: [
+            //       Checkbox(
+            //         value: true,
+            //         onChanged: (value){},
+            //         activeColor: AppConstants.green,),
+            //       GestureDetector(
+            //           child: const Text('Recordar contraseña', style: TextStyle(fontSize: 15, color: AppConstants.green, fontWeight: FontWeight.w600),)),
+            //     ],
+            //   ),
+            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

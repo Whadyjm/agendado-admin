@@ -1,4 +1,6 @@
 import 'package:agendado_admin/appConstantes.dart';
+import 'package:agendado_admin/view/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class WebPage extends StatefulWidget {
@@ -104,20 +106,20 @@ class _WebPageState extends State<WebPage> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Checkbox(
-                    value: true,
-                    onChanged: (value){},
-                    activeColor: AppConstants.green,),
-                  GestureDetector(
-                      child: const Text('Recordar contraseña', style: TextStyle(fontSize: 15, color: AppConstants.green, fontWeight: FontWeight.w600),)),
-                ],
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       Checkbox(
+            //         value: true,
+            //         onChanged: (value){},
+            //         activeColor: AppConstants.green,),
+            //       GestureDetector(
+            //           child: const Text('Recordar contraseña', style: TextStyle(fontSize: 15, color: AppConstants.green, fontWeight: FontWeight.w600),)),
+            //     ],
+            //   ),
+            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -133,10 +135,22 @@ class _WebPageState extends State<WebPage> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18)
                   ),
-                  onPressed: (){
-                    // Navigator.push(context, MaterialPageRoute(builder: (context){
-                    //   return const Home();
-                    // }));
+                  onPressed: () async {
+                    try {
+                      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: emailController.text.trim(),
+                        password: passwordController.text.trim(),
+                      );
+                      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context){
+                        return const Home();
+                      }), (route) => false);
+                    } on FirebaseAuthException catch (e) {
+                      if (e.code == 'user-not-found') {
+                        print('No user found for that email.');
+                      } else if (e.code == 'wrong-password') {
+                        print('Wrong password provided for that user.');
+                      }
+                    }
                   },
                   child: const Text('Iniciar sesión', style: TextStyle(color: AppConstants.darkBlue, fontSize: 20, fontWeight: FontWeight.bold),)
               ),
