@@ -136,21 +136,21 @@ class _WebPageState extends State<WebPage> {
                       borderRadius: BorderRadius.circular(18)
                   ),
                   onPressed: () async {
-                    try {
-                      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: emailController.text.trim(),
-                        password: passwordController.text.trim(),
-                      );
-                      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context){
-                        return const Home();
-                      }), (route) => false);
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'user-not-found') {
-                        print('No user found for that email.');
-                      } else if (e.code == 'wrong-password') {
-                        print('Wrong password provided for that user.');
-                      }
-                    }
+                    // try {
+                    //   final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                    //     email: emailController.text.trim(),
+                    //     password: passwordController.text.trim(),
+                    //   );
+                    //   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context){
+                    //     return const Home();
+                    //   }), (route) => false);
+                    // } on FirebaseAuthException catch (e) {
+                    //   if (e.code == 'user-not-found') {
+                    //     print('No user found for that email.');
+                    //   } else if (e.code == 'wrong-password') {
+                    //     print('Wrong password provided for that user.');
+                    //   }
+                    // }
                   },
                   child: const Text('Iniciar sesión', style: TextStyle(color: AppConstants.darkBlue, fontSize: 20, fontWeight: FontWeight.bold),)
               ),

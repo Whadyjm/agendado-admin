@@ -9,24 +9,22 @@ class SideMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialButton(
-      onPressed: () {  },
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Icon(prefixIcon, color: Colors.white,),
-                const SizedBox(width: 10,),
-                Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-              ],
-            ),
-            Icon(suffixIcon, color: Colors.white, size: 15,),
-          ],
-        ),
+
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(prefixIcon, color: Colors.white,),
+              const SizedBox(width: 10,),
+              Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+            ],
+          ),
+          Icon(suffixIcon, color: Colors.white, size: 15,),
+        ],
       ),
     );
   }

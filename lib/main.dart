@@ -1,15 +1,17 @@
 import 'package:agendado_admin/authPages/login.dart';
 import 'package:agendado_admin/firebase_options.dart';
+import 'package:agendado_admin/providers/sideBarMenuItemState.dart';
 import 'package:agendado_admin/view/home.dart';
 import 'package:agendado_admin/view/webPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
   runApp(const MyApp());
 }
 
@@ -22,15 +24,20 @@ class MyApp extends StatelessWidget {
 
     final screenPage = MediaQuery.sizeOf(context).width > 600;
 
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-          useMaterial3: true,
+    return ChangeNotifierProvider(
+      create: (context) {
+        return SideBarMenuItemState();
+      },
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+            useMaterial3: true,
+          ),
+          home: screenPage
+              ? const Home()
+              : const Login(),
         ),
-        home: screenPage
-            ? const Home()
-            : const Home(),
-      );
+    );
   }
 }
