@@ -1,7 +1,14 @@
+import 'package:agendado_admin/widgets/agregarCancha.dart';
 import 'package:flutter/material.dart';
 
-class Canchas extends StatelessWidget {
+class Canchas extends StatefulWidget {
   const Canchas({super.key});
+
+  @override
+  State<Canchas> createState() => _CanchasState();
+}
+
+class _CanchasState extends State<Canchas> {
 
   @override
   Widget build(BuildContext context) {
@@ -13,8 +20,12 @@ class Canchas extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-              onPressed: (){},
-              icon: const Icon(Icons.add_box, size: 100,), color: Colors.grey,)
+              onPressed: (){
+                showDialog(context: context, builder: (context){
+                  return AgregarCancha();
+                });
+              },
+              icon: const Icon(Icons.add_box, size: 100,), color: Colors.grey,),
           ]
         ),
       ],
