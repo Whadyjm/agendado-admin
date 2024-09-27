@@ -20,12 +20,6 @@ class DefaultFirebaseOptions {
       return web;
     }
     switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        return android;
-      case TargetPlatform.iOS:
-        return ios;
-      case TargetPlatform.macOS:
-        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -44,41 +38,11 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAaFX4YTCkPP_iSzZhtk65cTjeH1UJUwBQ',
-    appId: '1:523264101537:web:70981cdaa1923ad1f334e0',
-    messagingSenderId: '523264101537',
-    projectId: 'rimio-190cd',
-    authDomain: 'rimiosite.firebaseapp.com',
-    storageBucket: 'rimio-190cd.appspot.com',
-  );
-
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDbt-xbVKnUQu59PI4G-KdAU9ZsXff4BVg',
-    appId: '1:523264101537:android:1d0f664fc99c0a10f334e0',
-    messagingSenderId: '523264101537',
-    projectId: 'rimio-190cd',
-    storageBucket: 'rimio-190cd.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCV_ALKH7FRfmCeKx-aWkgBn-FU92um4cg',
-    appId: '1:523264101537:ios:3bd7f0b146152d7ff334e0',
-    messagingSenderId: '523264101537',
-    projectId: 'rimio-190cd',
-    storageBucket: 'rimio-190cd.appspot.com',
-    androidClientId: '523264101537-8lv0tukqqderecrkhkd00dud6sd4kp64.apps.googleusercontent.com',
-    iosClientId: '523264101537-im37j9udfiatsmi2uk220hvsil3ibrpg.apps.googleusercontent.com',
-    iosBundleId: 'com.example.musicMarket',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCV_ALKH7FRfmCeKx-aWkgBn-FU92um4cg',
-    appId: '1:523264101537:ios:b88562de34de8384f334e0',
-    messagingSenderId: '523264101537',
-    projectId: 'rimio-190cd',
-    storageBucket: 'rimio-190cd.appspot.com',
-    androidClientId: '523264101537-8lv0tukqqderecrkhkd00dud6sd4kp64.apps.googleusercontent.com',
-    iosClientId: '523264101537-22c33dd7hbg8obj0fi6035lluht9ln08.apps.googleusercontent.com',
-    iosBundleId: 'com.example.musicMarket.RunnerTests',
+    apiKey: 'AIzaSyDOl_MgSeCduI0nWchenhrJFa4Dsm1eLik',
+    appId: '1:973280151071:web:81cb8eb940642bc1bfb72a',
+    messagingSenderId: '973280151071',
+    projectId: 'agendado-admin',
+    authDomain: 'agendado-admin.firebaseapp.com',
+    storageBucket: 'agendado-admin.appspot.com',
   );
 }

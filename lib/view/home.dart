@@ -1,6 +1,9 @@
 import 'package:agendado_admin/appConstantes.dart';
 import 'package:agendado_admin/authPages/login.dart';
 import 'package:agendado_admin/view/canchas.dart';
+import 'package:agendado_admin/view/pagos.dart';
+import 'package:agendado_admin/view/perfil.dart';
+import 'package:agendado_admin/view/webPage.dart';
 import 'package:agendado_admin/widgets/agregarCancha.dart';
 import 'package:agendado_admin/widgets/bento.dart';
 import 'package:agendado_admin/view/dashboard.dart';
@@ -22,6 +25,8 @@ class _HomeState extends State<Home> {
   bool active2 = false;
   bool active3 = false;
   bool active4 = false;
+
+  final PageController _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +51,12 @@ class _HomeState extends State<Home> {
             padding: const EdgeInsets.all(8.0),
             child: Text(user!.email ?? '', style: const TextStyle(fontSize: 18, color: Colors.white),),
           ),
-          CircleAvatar()
+          IconButton(onPressed: (){
+            auth.signOut();
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context){
+              return const WebPage();
+            }), (Route<dynamic> route) => false);
+          }, icon: const Icon(Icons.logout_rounded, color: Colors.white,))
         ],
       ),
       body: SingleChildScrollView(
@@ -63,6 +73,7 @@ class _HomeState extends State<Home> {
             const SizedBox(height: 5,),
             MaterialButton(
                 onPressed: () {
+                  _pageController.animateToPage(0, duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
                   setState(() {});
                   active1
                       ? active1 = true
@@ -81,6 +92,7 @@ class _HomeState extends State<Home> {
             const Divider(),
             MaterialButton(
                 onPressed: () {
+                  _pageController.animateToPage(1, duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
                   setState(() {
                     active2
                         ? active2 = true
@@ -100,6 +112,7 @@ class _HomeState extends State<Home> {
             const Divider(),
             MaterialButton(
                 onPressed: (){
+                  _pageController.animateToPage(2, duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
                   setState(() {
                     active3
                         ? active3 = true
@@ -119,6 +132,7 @@ class _HomeState extends State<Home> {
             const Divider(),
             MaterialButton(
                 onPressed: (){
+                  _pageController.animateToPage(3, duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
                   setState(() {
                     active4
                         ? active4 = true
@@ -139,11 +153,25 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-            if (active1)
-              const DashBoard(),
-            const SizedBox(width: 750,),
-            if (active2)
-              const Canchas()
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.sizeOf(context).height,
+                    width: MediaQuery.of(context).size.width - 200,
+                    child: PageView(
+                      controller: _pageController,
+                      children: const [
+                        DashBoard(),
+                        Canchas(),
+                        Perfil(),
+                        Pagos()
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       )

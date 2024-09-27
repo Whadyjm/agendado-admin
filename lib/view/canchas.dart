@@ -1,4 +1,6 @@
 import 'package:agendado_admin/widgets/agregarCancha.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Canchas extends StatefulWidget {
@@ -20,10 +22,23 @@ class _CanchasState extends State<Canchas> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-              onPressed: (){
+              onPressed: () async {
                 showDialog(context: context, builder: (context){
                   return AgregarCancha();
                 });
+
+                User? user = FirebaseAuth.instance.currentUser;
+
+                try {
+
+                  await FirebaseFirestore.instance.collection('canchas')
+                      .doc('${user!.email}')
+                      .set({
+                    'cancha': 'cancha',
+                  });
+                } catch (e) {
+
+                }
               },
               icon: const Icon(Icons.add_box, size: 100,), color: Colors.grey,),
           ]

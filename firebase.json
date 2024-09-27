@@ -1,11 +1,7 @@
 {
   "hosting": {
-    "site": "agendado-admin",
-    "public": "build/web",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ]
+    "site":"agendado-admin",
+    "public":"build/web",
+    "ignore":["firebase.json","**/.*","**/node_modules/**"]
   }
 }

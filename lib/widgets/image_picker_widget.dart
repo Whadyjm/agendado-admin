@@ -28,11 +28,16 @@ class ImagePickerWidget extends StatelessWidget {
                   border: Border.all(width: 0),
                   borderRadius: BorderRadius.circular(18),
                 ),
-              ) : SizedBox(
-                width: 200,
-                height: double.parse((height ?? 200).toString()),
-                child: Image.network(imagedPicked!.path, fit: fix ?? BoxFit.contain,
-            ),
+              ) : Center(
+                child: SizedBox(
+                  width: 500,
+                  height: double.parse((height ?? 200).toString()),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: Image.network(imagedPicked!.path, fit: fix ?? BoxFit.fill,
+                                ),
+                  ),
+                ),
               ),
             ),
           ),
