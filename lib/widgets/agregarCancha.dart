@@ -164,35 +164,90 @@ class _AgregarCanchaState extends State<AgregarCancha> {
               },
             ),
             const SizedBox(height: 10,),
-            CustomButton(
-              onTap: () async {
+            MaterialButton(
+                height: 60,
+                minWidth: 350,
+                color: AppConstants.green,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18)
+                ),
+                onPressed: () async {
 
-                User? user = FirebaseAuth.instance.currentUser;
+                  User? user = FirebaseAuth.instance.currentUser;
 
-                try {
+                  if (_pickedImage == null) {
+                    aviso1();
+                  } else if (nombreController.text.isEmpty){
+                    aviso2();
+                  } else if ((yes||no)==false){
+                    aviso3();
+                  } else {
+                    try {
 
-                  await FirebaseFirestore.instance.collection('canchas')
-                      .doc('${user!.email} - ${nombreController.text}')
-                      .set({
-                    'cancha': nombreController.text,
-                  });
-                } catch (e) {
+                      await FirebaseFirestore.instance.collection('canchas')
+                          .doc('${user!.email} - ${nombreController.text}')
+                          .set({
+                        'cancha': nombreController.text,
+                      });
+                    } catch (e) {
 
-                }
-              },
-
-                height: 50,
-                width: 400,
-                color: _isButtonEnabled ? Colors.grey:Colors.green,
-                radius: 18,
-                text: 'Agregar cancha',
-                textColor: Colors.white,
-                shadow: 0,
-                colorShadow: Colors.white,
-                fontSize: 18)
+                    } finally {
+                      Navigator.pop(context);
+                    }
+                  }
+                  },
+                child: const Text('Agregar cancha', style: TextStyle(color: AppConstants.darkBlue, fontSize: 20, fontWeight: FontWeight.bold),)
+            ),
           ],
         ),
       )
     );
   }
+
+  void aviso2() {
+    showDialog(context: context, builder: (context){
+      return const AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.warning_rounded, color: Colors.amber,),
+            const SizedBox(width: 10,),
+            Text('Aviso'),
+          ],
+        ),
+        content: Text('Asegúrate de elegir un nombre'),
+      );
+    });
+  }
+
+  void aviso1() {
+    showDialog(context: context, builder: (context){
+      return const AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.warning_rounded, color: Colors.amber,),
+            SizedBox(width: 10,),
+            Text('Aviso'),
+          ],
+        ),
+        content: Text('Asegúrate de elegir una imagen'),
+      );
+    });
+  }
+
+
+  void aviso3() {
+    showDialog(context: context, builder: (context){
+      return const AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.warning_rounded, color: Colors.amber,),
+            SizedBox(width: 10,),
+            Text('Aviso'),
+          ],
+        ),
+        content: Text('Elige una opción'),
+      );
+    });
+  }
+
 }
