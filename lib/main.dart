@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         ),
         home: screenPage
             ? const Home()
-            : const Login(),
+            : const Home(),
       );
   }
 }

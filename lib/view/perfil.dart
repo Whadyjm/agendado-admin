@@ -9,9 +9,14 @@ class Perfil extends StatefulWidget {
 }
 
 class _PerfilState extends State<Perfil> {
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
+
+    final screenSize = MediaQuery.sizeOf(context).width > 600;
+
+    return screenSize
+        ? Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,6 +42,78 @@ class _PerfilState extends State<Perfil> {
                 const SizedBox(height: 10,),
                 TextButton(onPressed: (){}, child: const Text('Editar', style: TextStyle(fontSize: 15),)),
                 const Row(
+                  children: [
+                    const SizedBox(width: 50,),
+                    Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.grey,
+                        radius: 80,
+                        child: Icon(Icons.image, color: Colors.white38,),
+                      ),
+                    ),
+                    const SizedBox(width: 40,),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Empresa', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
+                        Text('Padel Park', style: TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                      ],
+                    ),
+                    const SizedBox(width: 40,),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Dirección', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
+                        Text('Urb. El Trigal, Calle Nro 130', style: TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                      ],
+                    ),
+                    const SizedBox(width: 40,),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Horario', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
+                        Text('8:00 am - 10:00 pm', style: TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    )
+        : Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: MediaQuery.sizeOf(context).width,
+            width: 500,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey.shade300,
+                    blurRadius: 5,
+                    spreadRadius: 5,
+                    offset: const Offset(2.5, 2.5)
+                )
+              ],
+              borderRadius: BorderRadius.circular(21),
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(onPressed: (){}, child: const Text('Editar', style: TextStyle(fontSize: 15),)),
+                  ],
+                ),
+                const Column(
                   children: [
                     const SizedBox(width: 50,),
                     Padding(

@@ -177,14 +177,111 @@ class _HomeState extends State<Home> {
       )
     )
         : Scaffold(
+      drawer: Drawer(
+        backgroundColor: AppConstants.darkBlue,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 5,),
+            MaterialButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _pageController.animateToPage(0, duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
+                  setState(() {});
+                  active1
+                      ? active1 = true
+                      : active1 = !active1;
+                  active2 = false;
+                  active3 = false;
+                  active4 = false;
+                },
+                child: active1
+                    ? Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(8),
+                    ), child: const SideMenuItem(prefixIcon: Icons.dashboard_rounded, text: 'Dashboard', suffixIcon: Icons.arrow_forward_ios_rounded,))
+                    : const SideMenuItem(prefixIcon: Icons.dashboard_rounded, text: 'Dashboard', suffixIcon: Icons.arrow_forward_ios_rounded,)),
+            const Divider(),
+            MaterialButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _pageController.animateToPage(1, duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
+                  setState(() {
+                    active2
+                        ? active2 = true
+                        : active2 = !active2;
+                    active1 = false;
+                    active3 = false;
+                    active4 = false;
+                  });
+                },
+                child: active2
+                    ? Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(8),
+                    ),child: const SideMenuItem(prefixIcon: Icons.sports_tennis_rounded, text: 'Canchas', suffixIcon: Icons.arrow_forward_ios_rounded))
+                    : const SideMenuItem(prefixIcon: Icons.sports_tennis_rounded, text: 'Canchas', suffixIcon: Icons.arrow_forward_ios_rounded)),
+            const Divider(),
+            MaterialButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                  _pageController.animateToPage(2, duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
+                  setState(() {
+                    active3
+                        ? active3 = true
+                        : active3 = !active3;
+                    active1 = false;
+                    active2 = false;
+                    active4 = false;
+                  });
+                },
+                child: active3
+                    ? Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(8),
+                    ), child: const SideMenuItem(prefixIcon: Icons.person, text: 'Mi Perfil', suffixIcon: Icons.arrow_forward_ios_rounded))
+                    : const SideMenuItem(prefixIcon: Icons.person, text: 'Mi Perfil', suffixIcon: Icons.arrow_forward_ios_rounded)),
+            const Divider(),
+            MaterialButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                  _pageController.animateToPage(3, duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
+                  setState(() {
+                    active4
+                        ? active4 = true
+                        : active4 = !active4;
+                    active1 = false;
+                    active2 = false;
+                    active3 = false;
+                  });
+                },
+                child: active4
+                    ? Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(8),
+                    ), child: const SideMenuItem(prefixIcon: Icons.payments_outlined, text: 'Pagos', suffixIcon: Icons.arrow_forward_ios_rounded))
+                    : const SideMenuItem(prefixIcon: Icons.payments_outlined, text: 'Pagos', suffixIcon: Icons.arrow_forward_ios_rounded)),
+            const Divider(),
+          ],
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: AppConstants.darkBlue,
         elevation: 5,
-        leading: IconButton(onPressed: (){}, icon: const Icon(Icons.menu_rounded, color: Colors.white,)),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(onPressed: (){
+            Scaffold.of(context).openDrawer();
+          }, icon: const Icon(Icons.menu_rounded, color: Colors.white,));
+            },
+        ),
         // title: Text(user!.email ?? '', style: const TextStyle(fontSize: 18, color: Colors.white),),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: (){}, icon: const Icon(Icons.info_outline_rounded, color: Colors.white,)),
           IconButton(onPressed: (){
             auth.signOut();
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context){
@@ -193,26 +290,24 @@ class _HomeState extends State<Home> {
           }, icon: const Icon(Icons.logout_rounded, color: Colors.white,)),
         ],
       ),
-      body: const Column(
-        children: [
-          const SizedBox(height: 10,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Bento(titulo: 'MIS CANCHAS', icon: Icons.sports_tennis_rounded, nro: 4, color: AppConstants.darkBlue,),
-              Bento(titulo: 'CANCHAS DISP.', icon: Icons.event_available_rounded, nro: 2, color: Colors.green,),
-              Bento(titulo: 'RESERVAS', icon: Icons.person_2_rounded, nro: 2, color: Color.fromRGBO(189, 168, 5, 1),),
-            ],
-          ),
-          const SizedBox(height: 10,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Bento(titulo: 'CANCELACIONES', icon: Icons.cancel_outlined, nro: 0, color: Colors.redAccent,),
-              Bento(titulo: 'PENDIENTES', icon: Icons.payments_rounded, nro: 1, color: Colors.orange,),
-            ],
-          ),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: MediaQuery.sizeOf(context).height,
+              width: MediaQuery.of(context).size.width,
+              child: PageView(
+                controller: _pageController,
+                children: const [
+                  DashBoard(),
+                  Canchas(),
+                  Perfil(),
+                  Pagos()
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
