@@ -183,11 +183,11 @@ class _AgregarCanchaState extends State<AgregarCancha> {
                     aviso3();
                   } else {
                     try {
-
                       await FirebaseFirestore.instance.collection('canchas')
                           .doc('${user!.email} - ${nombreController.text}')
                           .set({
                         'cancha': nombreController.text,
+                        'disponible': yes ? true:false,
                       });
                     } catch (e) {
 
