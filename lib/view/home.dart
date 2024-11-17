@@ -266,6 +266,14 @@ class _HomeState extends State<Home> {
                     ), child: const SideMenuItem(prefixIcon: Icons.payments_outlined, text: 'Pagos', suffixIcon: Icons.arrow_forward_ios_rounded))
                     : const SideMenuItem(prefixIcon: Icons.payments_outlined, text: 'Pagos', suffixIcon: Icons.arrow_forward_ios_rounded)),
             const Divider(),
+            MaterialButton(
+                onPressed: (){
+                  auth.signOut();
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context){
+                    return const Login();
+                  }), (route) => false);
+                },
+                child: const SideMenuItem(prefixIcon: Icons.logout_rounded, text: 'Cerrar sesión', suffixIcon: Icons.arrow_forward_ios_rounded)),
           ],
         ),
       ),
@@ -281,14 +289,6 @@ class _HomeState extends State<Home> {
         ),
         // title: Text(user!.email ?? '', style: const TextStyle(fontSize: 18, color: Colors.white),),
         centerTitle: true,
-        actions: [
-          IconButton(onPressed: (){
-            auth.signOut();
-            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context){
-              return const Login();
-            }), (route) => false);
-          }, icon: const Icon(Icons.logout_rounded, color: Colors.white,)),
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(

@@ -65,6 +65,32 @@ class _AgregarCanchaState extends State<AgregarCancha> {
     });
   }
 
+  Future<void> agregarCanchaDb() async {
+
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (_pickedImage == null) {
+      aviso1();
+    } else if (nombreController.text.isEmpty){
+      aviso2();
+    } else if ((yes||no)==false){
+      aviso3();
+    } else {
+      try {
+        await FirebaseFirestore.instance.collection('canchas')
+            .doc('${user!.email} - ${nombreController.text}')
+            .set({
+          'cancha': nombreController.text,
+          'disponible': yes ? true:false,
+        });
+      } catch (e) {
+
+      } finally {
+        Navigator.pop(context);
+      }
+    }
+  }
+
   bool _isButtonEnabled = false;
   bool yes = false;
   bool no = false;
@@ -172,29 +198,7 @@ class _AgregarCanchaState extends State<AgregarCancha> {
                     borderRadius: BorderRadius.circular(18)
                 ),
                 onPressed: () async {
-
-                  User? user = FirebaseAuth.instance.currentUser;
-
-                  if (_pickedImage == null) {
-                    aviso1();
-                  } else if (nombreController.text.isEmpty){
-                    aviso2();
-                  } else if ((yes||no)==false){
-                    aviso3();
-                  } else {
-                    try {
-                      await FirebaseFirestore.instance.collection('canchas')
-                          .doc('${user!.email} - ${nombreController.text}')
-                          .set({
-                        'cancha': nombreController.text,
-                        'disponible': yes ? true:false,
-                      });
-                    } catch (e) {
-
-                    } finally {
-                      Navigator.pop(context);
-                    }
-                  }
+                  agregarCanchaDb();
                   },
                 child: const Text('Agregar cancha', style: TextStyle(color: AppConstants.darkBlue, fontSize: 20, fontWeight: FontWeight.bold),)
             ),
