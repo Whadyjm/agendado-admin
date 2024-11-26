@@ -1,5 +1,6 @@
 import 'package:agendado_admin/authPages/login.dart';
 import 'package:agendado_admin/firebase_options.dart';
+import 'package:agendado_admin/providers/userProvider.dart';
 import 'package:agendado_admin/view/home.dart';
 import 'package:agendado_admin/view/webPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -28,15 +29,22 @@ class MyApp extends StatelessWidget {
 
     final screenPage = MediaQuery.sizeOf(context).width > 600;
 
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-          useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) {
+          return UserProvider();
+        }),
+      ],
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+            useMaterial3: true,
+          ),
+          home: screenPage
+              ? const WebPage()
+              : const Home(),
         ),
-        home: screenPage
-            ? const WebPage()
-            : const Home(),
-      );
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:agendado_admin/appConstantes.dart';
+import 'package:agendado_admin/authPages/registro.dart';
 import 'package:agendado_admin/view/home.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -167,6 +168,21 @@ class _LoginState extends State<Login> {
             //         }, child: const Text('Regístrate', style: TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.w600),))),
             //   ],
             // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('¿Aun no tienes cuenta?', style: TextStyle(fontSize: 18, color: AppConstants.green),),
+                GestureDetector(
+                    onTap: (){
+                    },
+                    child:
+                    TextButton(onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context){
+                        return const Registro();
+                      }));
+                    }, child: const Text('Regístrate', style: TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.w600),))),
+              ],
+            ),
           ],
         ),
       ),

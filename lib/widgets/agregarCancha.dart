@@ -78,11 +78,13 @@ class _AgregarCanchaState extends State<AgregarCancha> {
     } else {
       try {
         await FirebaseFirestore.instance.collection('canchas')
-            .doc('${user!.email} - ${nombreController.text}')
+            .doc('${user!.email} - cancha')
             .set({
           'cancha': nombreController.text,
+          'techada': techoYes ? true:false,
           'disponible': yes ? true:false,
-        });
+        },
+        SetOptions(merge: false));
       } catch (e) {
 
       } finally {
@@ -94,6 +96,9 @@ class _AgregarCanchaState extends State<AgregarCancha> {
   bool _isButtonEnabled = false;
   bool yes = false;
   bool no = false;
+
+  bool techoYes = false;
+  bool techoNo = false;
 
   final nombreController = TextEditingController();
 
@@ -112,97 +117,135 @@ class _AgregarCanchaState extends State<AgregarCancha> {
       content: SizedBox(
         height: 600,
         width: 500,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            SizedBox(
-                height: 300,
-                width: 300,
-                child: ImagePickerWidget(
-                  imagedPicked: _pickedImage,
-                  function: (){
-                    galeriaPicker();
-                  },)),
-            const SizedBox(height: 10,),
-            SizedBox(
-              width: 400,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: StatefulBuilder(
-                  builder: (BuildContext context, void Function(void Function()) setState) {
-                    return TextField(
-                      controller: nombreController,
-                      onChanged: (value){
-                        setState(() {
-                          _isButtonEnabled = value.isEmpty;
-                        });
-                      },
-                      decoration: const InputDecoration(
-                        labelText: 'Nombre de cancha',
-                        prefixIcon: Icon(Icons.sports_tennis_rounded),
-                        border: OutlineInputBorder(),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppConstants.darkBlue),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                  height: 300,
+                  width: 300,
+                  child: ImagePickerWidget(
+                    imagedPicked: _pickedImage,
+                    function: (){
+                      galeriaPicker();
+                    },)),
+              const SizedBox(height: 10,),
+              SizedBox(
+                width: 400,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: StatefulBuilder(
+                    builder: (BuildContext context, void Function(void Function()) setState) {
+                      return TextField(
+                        controller: nombreController,
+                        onChanged: (value){
+                          setState(() {
+                            _isButtonEnabled = value.isEmpty;
+                          });
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Nombre de cancha',
+                          prefixIcon: Icon(Icons.sports_tennis_rounded),
+                          border: OutlineInputBorder(),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: AppConstants.darkBlue),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green),
+                          ),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.green),
-                        ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 10,),
-            const Text('¿Se encuentra actualmente disponible al público?'),
-            const SizedBox(height: 10,),
-            StatefulBuilder(
-              builder: (BuildContext context, void Function(void Function()) setState) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Row(
-                      children: [
-                        const Text('Sí'),
-                        IconButton(onPressed: (){
-                          setState((){});
-                          yes = true;
-                          no = false;
-                        },
-                            icon: yes == true ? const Icon(Icons.check_box, color: Colors.green,):const Icon(Icons.check_box_outline_blank_rounded, color: AppConstants.darkBlue,)
-                        )
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Text('No'),
-                        IconButton(onPressed: (){
-                          setState((){});
-                          yes = false;
-                          no = true;
-                        },
-                            icon: no == true ? const Icon(Icons.check_box, color: Colors.green,):const Icon(Icons.check_box_outline_blank_rounded, color: AppConstants.darkBlue,)
-                        )
-                      ],
-                    ),
-                  ],
-                );
-              },
-            ),
-            const SizedBox(height: 10,),
-            MaterialButton(
-                height: 60,
-                minWidth: 350,
-                color: AppConstants.green,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18)
-                ),
-                onPressed: () async {
-                  agregarCanchaDb();
-                  },
-                child: const Text('Agregar cancha', style: TextStyle(color: AppConstants.darkBlue, fontSize: 20, fontWeight: FontWeight.bold),)
-            ),
-          ],
+              const SizedBox(height: 10,),
+              const Text('¿Es cancha techada?'),
+              const SizedBox(height: 10,),
+              StatefulBuilder(
+                builder: (BuildContext context, void Function(void Function()) setState) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        children: [
+                          const Text('Sí'),
+                          IconButton(onPressed: (){
+                            setState((){});
+                            techoYes = true;
+                            techoNo = false;
+                          },
+                              icon: techoYes == true ? const Icon(Icons.check_box, color: Colors.green,):const Icon(Icons.check_box_outline_blank_rounded, color: AppConstants.darkBlue,)
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text('No'),
+                          IconButton(onPressed: (){
+                            setState((){});
+                            techoYes = false;
+                            techoNo = true;
+                          },
+                              icon: techoNo == true ? const Icon(Icons.check_box, color: Colors.green,):const Icon(Icons.check_box_outline_blank_rounded, color: AppConstants.darkBlue,)
+                          )
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 10,),
+              const Text('¿Se encuentra actualmente disponible al público?'),
+              const SizedBox(height: 10,),
+              StatefulBuilder(
+                builder: (BuildContext context, void Function(void Function()) setState) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        children: [
+                          const Text('Sí'),
+                          IconButton(onPressed: (){
+                            setState((){});
+                            yes = true;
+                            no = false;
+                          },
+                              icon: yes == true ? const Icon(Icons.check_box, color: Colors.green,):const Icon(Icons.check_box_outline_blank_rounded, color: AppConstants.darkBlue,)
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text('No'),
+                          IconButton(onPressed: (){
+                            setState((){});
+                            yes = false;
+                            no = true;
+                          },
+                              icon: no == true ? const Icon(Icons.check_box, color: Colors.green,):const Icon(Icons.check_box_outline_blank_rounded, color: AppConstants.darkBlue,)
+                          )
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 10,),
+              MaterialButton(
+                  height: 60,
+                  minWidth: 350,
+                  color: AppConstants.green,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18)
+                  ),
+                  onPressed: () async {
+                    agregarCanchaDb();
+                    },
+                  child: const Text('Agregar cancha', style: TextStyle(color: AppConstants.darkBlue, fontSize: 20, fontWeight: FontWeight.bold),)
+              ),
+            ],
+          ),
         ),
       )
     );

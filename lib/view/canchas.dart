@@ -17,6 +17,8 @@ class _CanchasState extends State<Canchas> {
   @override
   Widget build(BuildContext context) {
 
+    User? user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       floatingActionButton:
       FloatingActionButton.extended(
@@ -31,8 +33,8 @@ class _CanchasState extends State<Canchas> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FutureBuilder(
-            future: FirebaseFirestore.instance.collection('canchas').get(),
+          StreamBuilder(
+            stream: FirebaseFirestore.instance.collection('canchas').snapshots(),
             builder: (context, snapshot) {
               if(snapshot.connectionState == ConnectionState.waiting){
                 return const Center(child: CircularProgressIndicator(),);
@@ -48,7 +50,19 @@ class _CanchasState extends State<Canchas> {
                       child: Column(
                         children: [
                           Text('${snapshot.data!.docs[index].data()['cancha']}'),
+                          Text(snapshot.data!.docs[index].data()['techada'] ? 'Si':'No'),
                           Text(snapshot.data!.docs[index].data()['disponible'] ? 'Disponible':'No disponible'),
+                          StreamBuilder(
+                              stream: FirebaseFirestore.instance.collection('perfiles').snapshots(),
+                              builder: (context, snapshot){
+                                if(snapshot.connectionState == ConnectionState.waiting){
+                                  return const Center(child: CircularProgressIndicator(),);
+                                }
+                                if (!snapshot.hasData){
+                                  return const Text('Sin Info');
+                                }
+                                return Text('${snapshot.data!.docs[index].data()['horario']}');
+                              })
                         ],
                       ),
                     );
