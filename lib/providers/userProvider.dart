@@ -27,8 +27,11 @@ class UserProvider with ChangeNotifier {
       userModel = UserModel(
         empresa: userDoc.get('empresa'),
         rif: userDoc.get('rif'),
+        direccion: userDoc.get('direccion'),
         phone: userDoc.get('phone'),
         email: userDoc.get('email'),
+        desde: userDoc.get('desde'),
+        hasta: userDoc.get('hasta'),
       );
       return userModel;
     } on FirebaseException catch(e){

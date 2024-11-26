@@ -208,69 +208,192 @@ class _editarDatosState extends State<editarDatos> {
   TextEditingController empresaController = TextEditingController();
   TextEditingController direccionController = TextEditingController();
 
+  late DateTime? selectedDate = DateTime.now();
+  late TimeOfDay? selectedTime1 = TimeOfDay.now();
+  late TimeOfDay? selectedTime2 = TimeOfDay.now();
+
+  Future<void> showDate () async {
+    selectedDate = await showDatePicker(
+        keyboardType: TextInputType.datetime,
+        context: context,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2050)
+    );
+    if (selectedDate != null) {
+      setState(() {});
+    } else {
+      selectedDate = DateTime.now();
+    }
+  }
+
+  Future<void> pickHour1 () async {
+    selectedTime1 = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now()
+    );
+    if (selectedTime1 != null) {
+      setState(() {});
+    } else {
+      selectedTime1 = TimeOfDay.now();
+    }
+  }
+
+  Future<void> pickHour2 () async {
+    selectedTime2 = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now()
+    );
+    if (selectedTime2 != null) {
+      setState(() {});
+    } else {
+      selectedTime2 = TimeOfDay.now();
+    }
+  }
+
+  UserModel? userModel;
+  User? user = FirebaseAuth.instance.currentUser;
+
+  Future<void> fetchUserInfo() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    try {
+      userModel = await userProvider.fetchUserInfo();
+    } finally {
+    }
+  }
+
+  @override
+  void initState() {
+    fetchUserInfo();
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
 
     return AlertDialog(
       title: const Center(child: Text('Datos de perfil')),
       content: SizedBox(
-        height: 200,
-        width: 150,
-        child: Column(
-          children: [
-          TextField(
-          controller: empresaController,
-          onChanged: (value){
-            setState(() {
-              _isButtonEnabled = value.isEmpty;
-            });
-          },
-          decoration: const InputDecoration(
-            labelText: 'Empresa',
-            prefixIcon: Icon(Icons.sports_tennis_rounded),
-            border: OutlineInputBorder(),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: AppConstants.darkBlue),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.green),
-            ),
-          ),
-        ),
-            const SizedBox(height: 10,),
-            TextField(
-              controller: direccionController,
-              onChanged: (value){
-                setState(() {
-                  _isButtonEnabled = value.isEmpty;
-                });
-              },
-              decoration: const InputDecoration(
-                labelText: 'Direccion',
-                prefixIcon: Icon(Icons.location_pin),
-                border: OutlineInputBorder(),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: AppConstants.darkBlue),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: MaterialButton(
-                  height: 60,
-                  minWidth: 350,
-                  color: AppConstants.green,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18)
+        height: 300,
+        width: 300,
+        child: FutureBuilder(
+          future: FirebaseFirestore.instance.collection('users').doc(user!.email).get(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextField(
+                  controller: empresaController,
+                  decoration: InputDecoration(
+                    labelText: userModel!.empresa,
+                    prefixIcon: const Icon(Icons.sports_tennis_rounded),
+                    border: const OutlineInputBorder(),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: AppConstants.darkBlue),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green),
+                    ),
                   ),
-                  onPressed: () async {
-                  },
-                  child: const Text('Guardar cambios', style: TextStyle(color: AppConstants.darkBlue, fontSize: 18, fontWeight: FontWeight.bold),)
-              ),
-            ),
-          ],
+                ),
+                const SizedBox(height: 10,),
+                TextField(
+                  controller: direccionController,
+                  decoration: InputDecoration(
+                    labelText: userModel!.direccion,
+                    prefixIcon: const Icon(Icons.location_pin),
+                    border: const OutlineInputBorder(),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: AppConstants.darkBlue),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: pickHour1,
+                        child: Container(
+                            padding: const EdgeInsets.all(12),
+                            height: 50,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Desde'),
+                                Text(userModel!.desde, style: const TextStyle(fontSize: 12, color: Colors.grey),)
+                              ],
+                            )
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: pickHour2,
+                        child: Container(
+                            padding: const EdgeInsets.all(12),
+                            height: 50,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Hasta'),
+                                Text(userModel!.hasta, style: const TextStyle(fontSize: 12, color: Colors.grey),)
+                              ],
+                            )
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: MaterialButton(
+                      height: 60,
+                      minWidth: 350,
+                      color: AppConstants.green,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18)
+                      ),
+                      onPressed: () async {
+
+                        // TODO: Terminar con los parametros que faltan por editar y extraer metodo!!!!!
+                        try{
+                          FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(user!.email)
+                              .update({
+                            'empresa': empresaController.text.trim(),
+                          });
+                        }catch(e){
+
+                        }finally {
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: const Text('Guardar cambios', style: TextStyle(color: AppConstants.darkBlue, fontSize: 18, fontWeight: FontWeight.bold),)
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
