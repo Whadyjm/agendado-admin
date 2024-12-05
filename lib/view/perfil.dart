@@ -62,44 +62,78 @@ class _PerfilState extends State<Perfil> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 const SizedBox(height: 10,),
-                TextButton(onPressed: (){}, child: const Text('Editar', style: TextStyle(fontSize: 15),)),
-                const Row(
-                  children: [
-                    const SizedBox(width: 50,),
-                    Padding(
-                      padding: EdgeInsets.all(12.0),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        radius: 80,
-                        child: Icon(Icons.image, color: Colors.white38,),
-                      ),
-                    ),
-                    const SizedBox(width: 40,),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Empresa', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
-                        Text('Padel Park', style: TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
-                      ],
-                    ),
-                    const SizedBox(width: 40,),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Dirección', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
-                        Text('Urb. El Trigal, Calle Nro 130', style: TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
-                      ],
-                    ),
-                    const SizedBox(width: 40,),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Horario', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
-                        Text('8:00 am - 10:00 pm', style: TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
-                      ],
-                    ),
-                  ],
-                ),
+                TextButton(
+                    onPressed: () async {
+                      await showDialog(context: context, builder: (context) {
+                        return const editarDatos();
+                      }
+                      );
+                    }, child: const Text('Editar', style: TextStyle(fontSize: 15),)),
+                FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  future: FirebaseFirestore.instance.collection('users').doc('${user!.email}').get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+
+                      if (snapshot.hasData) {
+                        final userDoc = snapshot.data!;
+                        final empresa = userDoc['empresa'] as String?;
+                        final rif = userDoc['rif'] as String?;
+                        final direccion = userDoc['direccion'] as String?;
+                        final desde = userDoc['desde'] as String?;
+                        final hasta = userDoc['hasta'] as String?;
+
+                        return Row(
+                          children: [
+                            const SizedBox(width: 50,),
+                            const Padding(
+                              padding: EdgeInsets.all(12.0),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                radius: 80,
+                                child: Icon(Icons.image, color: Colors.white38,),
+                              ),
+                            ),
+                            const SizedBox(width: 30,),
+                            Column(
+                              children: [
+                                const Text('Empresa', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
+                                Text('$empresa', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                              ],
+                            ),
+                            const SizedBox(width: 30,),
+                            Column(
+                              children: [
+                                const Text('RIF', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
+                                Text('J-$rif', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                              ],
+                            ),
+                            const SizedBox(width: 30,),
+                            Column(
+                              children: [
+                                const Text('Dirección', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
+                                Text('$direccion', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                              ],
+                            ),
+                            const SizedBox(width: 30,),
+                            Column(
+                              children: [
+                                const Text('Horario', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
+                                Text('$desde:00 - $hasta:00', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                              ],
+                            ),
+                          ],
+                        );
+                      }
+                    }
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 50.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  },
+                )
               ],
             ),
           ),
@@ -132,7 +166,8 @@ class _PerfilState extends State<Perfil> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(onPressed: () async {
+                    TextButton(
+                        onPressed: () async {
                       await showDialog(context: context, builder: (context) {
                         return const editarDatos();
                       }
@@ -141,7 +176,7 @@ class _PerfilState extends State<Perfil> {
                   ],
                 ),
                 FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                  future: FirebaseFirestore.instance.collection('users').doc('martinez.whady@gmail.com').get(),
+                  future: FirebaseFirestore.instance.collection('users').doc('${user!.email}').get(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasError) {
@@ -168,10 +203,13 @@ class _PerfilState extends State<Perfil> {
                             ),
                             const Text('Empresa', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
                             Text('$empresa', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                            const SizedBox(height: 10,),
                             const Text('RIF', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
                             Text('J-$rif', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                            const SizedBox(height: 10,),
                             const Text('Dirección', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
                             Text('$direccion', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                            const SizedBox(height: 10,),
                             const Text('Horario', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
                             Text('$desde:00 - $hasta:00', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
                           ],
@@ -332,7 +370,7 @@ class _editarDatosState extends State<editarDatos> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text('Desde'),
-                                Text(userModel!.desde, style: const TextStyle(fontSize: 12, color: Colors.grey),)
+                                Text('${userModel!.desde}:00', style: const TextStyle(fontSize: 12, color: Colors.grey),)
                               ],
                             )
                         ),
@@ -355,7 +393,7 @@ class _editarDatosState extends State<editarDatos> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text('Hasta'),
-                                Text(userModel!.hasta, style: const TextStyle(fontSize: 12, color: Colors.grey),)
+                                Text('${userModel!.hasta}:00', style: const TextStyle(fontSize: 12, color: Colors.grey),)
                               ],
                             )
                         ),
@@ -374,20 +412,21 @@ class _editarDatosState extends State<editarDatos> {
                       ),
                       onPressed: () async {
 
-                        // TODO: Terminar con los parametros que faltan por editar y extraer metodo!!!!!
-                        try{
-                          FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(user!.email)
-                              .update({
-                            'empresa': empresaController.text.trim(),
-                          });
-                        }catch(e){
+                          try {
+                            FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(user!.email)
+                                .update({
+                              'empresa': empresaController.text.isEmpty ? userModel!.empresa:empresaController.text.trim(),
+                              'direccion': direccionController.text.isEmpty ? userModel!.direccion:direccionController.text.trim(),
+                              'desde': selectedTime1!.hour.toString(),
+                              'hasta': selectedTime2!.hour.toString(),
+                            });
+                          } catch (e) {
 
-                        }finally {
+                          }
                           Navigator.pop(context);
-                        }
-                      },
+                        },
                       child: const Text('Guardar cambios', style: TextStyle(color: AppConstants.darkBlue, fontSize: 18, fontWeight: FontWeight.bold),)
                   ),
                 ),

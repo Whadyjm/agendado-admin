@@ -19,9 +19,27 @@ class _CanchasState extends State<Canchas> {
 
     User? user = FirebaseAuth.instance.currentUser;
 
+    final  screenSize = MediaQuery.sizeOf(context).width > 600;
     return Scaffold(
       floatingActionButton:
-      FloatingActionButton.extended(
+      screenSize
+          ? Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 30),
+            child: FloatingActionButton.extended(
+              backgroundColor: AppConstants.darkBlue,
+              onPressed: () async {
+                showDialog(context: context, builder: (context){
+                  return const AgregarCancha();
+                });
+              }, label: const Text('Añadir cancha', style: TextStyle(color: Colors.white),),
+              icon: const Icon(Icons.add, color: Colors.white,),
+            ),
+          ),
+        ],
+      )
+      : FloatingActionButton.extended(
         backgroundColor: AppConstants.darkBlue,
         onPressed: () async {
           showDialog(context: context, builder: (context){
@@ -33,44 +51,31 @@ class _CanchasState extends State<Canchas> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('canchas').snapshots(),
-            builder: (context, snapshot) {
-              if(snapshot.connectionState == ConnectionState.waiting){
-                return const Center(child: CircularProgressIndicator(),);
-              }
-              if (!snapshot.hasData){
-                return const Text('Sin Canchas');
-              }
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index){
-                    return Container(
-                      child: Column(
-                        children: [
-                          Text('${snapshot.data!.docs[index].data()['cancha']}'),
-                          Text(snapshot.data!.docs[index].data()['techada'] ? 'Si':'No'),
-                          Text(snapshot.data!.docs[index].data()['disponible'] ? 'Disponible':'No disponible'),
-                          StreamBuilder(
-                              stream: FirebaseFirestore.instance.collection('perfiles').snapshots(),
-                              builder: (context, snapshot){
-                                if(snapshot.connectionState == ConnectionState.waiting){
-                                  return const Center(child: CircularProgressIndicator(),);
-                                }
-                                if (!snapshot.hasData){
-                                  return const Text('Sin Info');
-                                }
-                                return Text('${snapshot.data!.docs[index].data()['horario']}');
-                              })
-                        ],
-                      ),
+          FutureBuilder(
+              future: FirebaseFirestore.instance.collection('canchas').doc('cancha de ${user!.email}').get(),
+              builder: (context, snapshot){
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+                  if (snapshot.hasData) {
+                    final userDoc = snapshot.data!;
+                    final cancha = userDoc['cancha'] as String?;
+                    final disponible = userDoc['disponible'] as bool?;
+                    final techada = userDoc['techada'] as bool?;
+
+                    return Column(
+                      children: [
+                        Text(cancha!),
+                        Text(techada != null ? 'Si':'No'),
+                        Text(disponible != null ? 'Disponible':'No disponible'),
+                      ],
                     );
-                  },
-                ),
-              );
-            },
-          ),
+                  }
+                }
+                return const CircularProgressIndicator();
+              }
+              ),
         ],
       ),
     );

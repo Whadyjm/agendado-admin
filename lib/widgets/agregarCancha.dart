@@ -78,7 +78,7 @@ class _AgregarCanchaState extends State<AgregarCancha> {
     } else {
       try {
         await FirebaseFirestore.instance.collection('canchas')
-            .doc('${user!.email} - cancha')
+            .doc('cancha de ${user!.email}')
             .set({
           'cancha': nombreController.text,
           'techada': techoYes ? true:false,
@@ -115,7 +115,7 @@ class _AgregarCanchaState extends State<AgregarCancha> {
         ],
       ),
       content: SizedBox(
-        height: 600,
+        height: 650,
         width: 500,
         child: SingleChildScrollView(
           child: Column(
