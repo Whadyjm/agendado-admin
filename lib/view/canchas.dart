@@ -1,4 +1,5 @@
 import 'package:agendado_admin/appConstantes.dart';
+import 'package:agendado_admin/providers/canchaProvider.dart';
 import 'package:agendado_admin/widgets/agregarCancha.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +18,7 @@ class _CanchasState extends State<Canchas> {
   @override
   Widget build(BuildContext context) {
 
+    final canchaProvider = Provider.of<CanchaProvider>(context, listen: false);
     User? user = FirebaseAuth.instance.currentUser;
 
     final  screenSize = MediaQuery.sizeOf(context).width > 600;
@@ -51,31 +53,19 @@ class _CanchasState extends State<Canchas> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FutureBuilder(
-              future: FirebaseFirestore.instance.collection('canchas').doc('cancha de ${user!.email}').get(),
-              builder: (context, snapshot){
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
-                  if (snapshot.hasData) {
-                    final userDoc = snapshot.data!;
-                    final cancha = userDoc['cancha'] as String?;
-                    final disponible = userDoc['disponible'] as bool?;
-                    final techada = userDoc['techada'] as bool?;
-
-                    return Column(
-                      children: [
-                        Text(cancha!),
-                        Text(techada != null ? 'Si':'No'),
-                        Text(disponible != null ? 'Disponible':'No disponible'),
-                      ],
-                    );
-                  }
-                }
-                return const CircularProgressIndicator();
-              }
-              ),
+          SizedBox(
+            height: 800,
+            width: 500,
+            child: ListView.builder(
+                itemCount: canchaProvider.getCanchas.length,
+                itemBuilder: (context, index){
+                  return Container(
+                    height: 50,
+                    width: 100,
+                    child: Text(canchaProvider.getCanchas.values.toList()[index].cancha),
+                  );
+            }),
+          )
         ],
       ),
     );

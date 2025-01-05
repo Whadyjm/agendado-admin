@@ -676,6 +676,7 @@ class LoginState extends State<Registro> {
           'desde': selectedTime1!.hour.toString(),
           'hasta': selectedTime2!.hour.toString(),
           'password': passwordTextController.text.trim(),
+          'canchas': [],
         }).then((value) {
           Navigator.pushAndRemoveUntil(context,
               MaterialPageRoute(builder: (context) => Home()),

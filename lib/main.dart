@@ -1,5 +1,6 @@
 import 'package:agendado_admin/authPages/login.dart';
 import 'package:agendado_admin/firebase_options.dart';
+import 'package:agendado_admin/providers/canchaProvider.dart';
 import 'package:agendado_admin/providers/userProvider.dart';
 import 'package:agendado_admin/view/home.dart';
 import 'package:agendado_admin/view/webPage.dart';
@@ -33,6 +34,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) {
           return UserProvider();
+        }),
+        ChangeNotifierProvider(create: (_) {
+          return CanchaProvider();
         }),
       ],
       child: MaterialApp(

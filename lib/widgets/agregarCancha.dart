@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:agendado_admin/appConstantes.dart';
+import 'package:agendado_admin/providers/canchaProvider.dart';
 import 'package:agendado_admin/widgets/customButton.dart';
 import 'package:agendado_admin/widgets/image_picker_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class AgregarCancha extends StatefulWidget {
   const AgregarCancha({super.key});
@@ -65,34 +67,6 @@ class _AgregarCanchaState extends State<AgregarCancha> {
     });
   }
 
-  Future<void> agregarCanchaDb() async {
-
-    User? user = FirebaseAuth.instance.currentUser;
-
-    if (_pickedImage == null) {
-      aviso1();
-    } else if (nombreController.text.isEmpty){
-      aviso2();
-    } else if ((yes||no)==false){
-      aviso3();
-    } else {
-      try {
-        await FirebaseFirestore.instance.collection('canchas')
-            .doc('cancha de ${user!.email}')
-            .set({
-          'cancha': nombreController.text,
-          'techada': techoYes ? true:false,
-          'disponible': yes ? true:false,
-        },
-        SetOptions(merge: false));
-      } catch (e) {
-
-      } finally {
-        Navigator.pop(context);
-      }
-    }
-  }
-
   bool _isButtonEnabled = false;
   bool yes = false;
   bool no = false;
@@ -106,6 +80,8 @@ class _AgregarCanchaState extends State<AgregarCancha> {
 
   @override
   Widget build(BuildContext context) {
+
+    final canchaProvider = Provider.of<CanchaProvider>(context, listen: false);
 
     return AlertDialog(
       title: const Row(
@@ -240,7 +216,10 @@ class _AgregarCanchaState extends State<AgregarCancha> {
                       borderRadius: BorderRadius.circular(18)
                   ),
                   onPressed: () async {
-                    agregarCanchaDb();
+                    canchaProvider.addCancha(
+                        nombreCancha: nombreController.text, context: context,
+                        techada: techoYes ? true:false,
+                        disponible: yes ? true:false);
                     },
                   child: const Text('Agregar cancha', style: TextStyle(color: AppConstants.darkBlue, fontSize: 20, fontWeight: FontWeight.bold),)
               ),

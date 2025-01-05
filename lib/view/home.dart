@@ -298,11 +298,13 @@ class _HomeState extends State<Home> {
               width: MediaQuery.of(context).size.width,
               child: PageView(
                 controller: _pageController,
-                children: const [
-                  DashBoard(),
-                  Canchas(),
-                  Perfil(),
-                  Pagos()
+                children: [
+                  const DashBoard(),
+                  const Canchas(),
+                  Visibility(
+                      visible: user == null ? false:true,
+                      child: const Perfil()),
+                  const Pagos()
                 ],
               ),
             ),
