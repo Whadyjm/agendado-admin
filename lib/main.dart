@@ -46,8 +46,8 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           home: screenPage
-              ? const Home()
-              : const Home(),
+              ? const Login()
+              : const Login(),
         ),
     );
   }

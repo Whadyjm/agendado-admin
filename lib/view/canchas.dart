@@ -1,6 +1,7 @@
 import 'package:agendado_admin/appConstantes.dart';
 import 'package:agendado_admin/providers/canchaProvider.dart';
 import 'package:agendado_admin/widgets/agregarCancha.dart';
+import 'package:agendado_admin/widgets/canchaWidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class _CanchasState extends State<Canchas> {
   Widget build(BuildContext context) {
 
     final canchaProvider = Provider.of<CanchaProvider>(context, listen: false);
+    final cancha = canchaProvider.getCanchas.values.toList();
     User? user = FirebaseAuth.instance.currentUser;
 
     final  screenSize = MediaQuery.sizeOf(context).width > 600;
@@ -51,7 +53,6 @@ class _CanchasState extends State<Canchas> {
         icon: const Icon(Icons.add, color: Colors.white,),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
             height: 800,
@@ -59,11 +60,13 @@ class _CanchasState extends State<Canchas> {
             child: ListView.builder(
                 itemCount: canchaProvider.getCanchas.length,
                 itemBuilder: (context, index){
-                  return Container(
-                    height: 50,
-                    width: 100,
-                    child: Text(canchaProvider.getCanchas.values.toList()[index].cancha),
-                  );
+                  return (user!.uid == canchaProvider.getCanchas.values.toList()[index].userId)
+                      ?CanchaWidget(
+                    cancha: cancha[index].cancha,
+                    disponible: cancha[index].disponible,
+                    techada: cancha[index].techada,
+                    horario: '',)
+                      :const SizedBox.shrink();
             }),
           )
         ],

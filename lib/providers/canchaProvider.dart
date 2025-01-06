@@ -33,9 +33,10 @@ class CanchaProvider with ChangeNotifier {
     final uid = user.uid;
     final publishId = const Uuid().v4();
     try {
-      await userCanchaDb.doc(user.email).update({
+      await userCanchaDb.doc(user.uid).update({
         'canchas': FieldValue.arrayUnion([
           {
+            'userId':user.uid,
             'publishId': publishId,
             'cancha': nombreCancha,
             'techada': techada,
@@ -58,7 +59,7 @@ class CanchaProvider with ChangeNotifier {
       return;
     }
     try {
-      final userDoc = await userCanchaDb.doc(user.email).get();
+      final userDoc = await userCanchaDb.doc(user.uid).get();
       final data = userDoc.data();
       if (data == null || !data.containsKey('canchas')) {
         return;
@@ -72,8 +73,10 @@ class CanchaProvider with ChangeNotifier {
                   cancha: userDoc.get('canchas')[index]['cancha'],
                   disponible: userDoc.get('canchas')[index]['techada'],
                   techada: userDoc.get('canchas')[index]['disponible'],
+                  userId: userDoc.get('canchas')[index]['userId'],
             ));
       }
+      await fetchCanchaList();
     } catch (e) {
       rethrow;
     }

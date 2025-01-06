@@ -70,7 +70,7 @@ class _PerfilState extends State<Perfil> {
                       );
                     }, child: const Text('Editar', style: TextStyle(fontSize: 15),)),
                 FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                  future: FirebaseFirestore.instance.collection('users').doc('${user!.email}').get(),
+                  future: FirebaseFirestore.instance.collection('users').doc(user!.uid).get(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasError) {
@@ -176,7 +176,7 @@ class _PerfilState extends State<Perfil> {
                   ],
                 ),
                 FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                  future: FirebaseFirestore.instance.collection('users').doc('${user!.email}').get(),
+                  future: FirebaseFirestore.instance.collection('users').doc(user!.uid).get(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasError) {

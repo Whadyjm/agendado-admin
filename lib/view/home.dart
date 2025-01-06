@@ -1,5 +1,6 @@
 import 'package:agendado_admin/appConstantes.dart';
 import 'package:agendado_admin/authPages/login.dart';
+import 'package:agendado_admin/providers/canchaProvider.dart';
 import 'package:agendado_admin/view/canchas.dart';
 import 'package:agendado_admin/view/pagos.dart';
 import 'package:agendado_admin/view/perfil.dart';
@@ -11,6 +12,7 @@ import 'package:agendado_admin/widgets/sideMenuItem.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -27,6 +29,24 @@ class _HomeState extends State<Home> {
   bool active4 = false;
 
   final PageController _pageController = PageController();
+
+  Future<void> fetchFCT() async {
+    final canchaProvider = Provider.of<CanchaProvider>(context, listen: false);
+
+    try {
+      Future.wait({
+        canchaProvider.fetchCanchaList()
+      });
+    } catch (e) {
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+
+    fetchFCT();
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {

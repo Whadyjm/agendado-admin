@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 class CanchaModel with ChangeNotifier{
   late String image;
   late String cancha;
+  final String userId;
   late bool disponible;
   late bool techada;
 
   CanchaModel({
     required this.image,
     required this.cancha,
+    required this.userId,
     required this.disponible,
     required this.techada
 });
@@ -20,6 +22,7 @@ class CanchaModel with ChangeNotifier{
     return CanchaModel(
         image: data['canchaImage'],
         cancha: data['cancha'],
+        userId: data['userId'],
         disponible: data['disponible'],
         techada: data['techada'],
     );

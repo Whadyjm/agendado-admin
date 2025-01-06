@@ -664,10 +664,16 @@ class LoginState extends State<Registro> {
   }
 
   void registroDatos() {
+
+    final auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    final String uid = user!.uid;
+
     FirebaseFirestore.instance.collection('users')
-        .doc(emailTextController.text.trim().toLowerCase())
+        .doc(uid)
         .set(
         {
+          'userID': uid,
           'empresa': empresaTextController.text.trim(),
           'rif': rifTextController.text.trim(),
           'email': emailTextController.text.trim(),
