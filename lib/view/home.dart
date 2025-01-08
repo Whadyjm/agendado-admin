@@ -1,6 +1,7 @@
 import 'package:agendado_admin/appConstantes.dart';
 import 'package:agendado_admin/authPages/login.dart';
 import 'package:agendado_admin/providers/canchaProvider.dart';
+import 'package:agendado_admin/providers/userProvider.dart';
 import 'package:agendado_admin/view/canchas.dart';
 import 'package:agendado_admin/view/pagos.dart';
 import 'package:agendado_admin/view/perfil.dart';
@@ -31,10 +32,11 @@ class _HomeState extends State<Home> {
   final PageController _pageController = PageController();
 
   Future<void> fetchFCT() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     final canchaProvider = Provider.of<CanchaProvider>(context, listen: false);
-
     try {
       Future.wait({
+        userProvider.fetchUserInfo(),
         canchaProvider.fetchCanchaList()
       });
     } catch (e) {

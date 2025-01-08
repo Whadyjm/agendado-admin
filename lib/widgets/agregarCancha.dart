@@ -220,6 +220,7 @@ class _AgregarCanchaState extends State<AgregarCancha> {
                         nombreCancha: nombreController.text, context: context,
                         techada: techoYes ? true:false,
                         disponible: yes ? true:false);
+                    Navigator.pop(context);
                     },
                   child: const Text('Agregar cancha', style: TextStyle(color: AppConstants.darkBlue, fontSize: 20, fontWeight: FontWeight.bold),)
               ),

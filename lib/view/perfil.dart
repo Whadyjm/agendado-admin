@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:agendado_admin/appConstantes.dart';
 import 'package:agendado_admin/models/userModel.dart';
 import 'package:agendado_admin/providers/userProvider.dart';
+import 'package:agendado_admin/widgets/image_picker_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class Perfil extends StatefulWidget {
@@ -31,6 +37,38 @@ class _PerfilState extends State<Perfil> {
     fetchUserInfo();
     super.initState();
   }
+
+  XFile? _pickedImage;
+
+  String base64String = '';
+  Future<void> galeriaPicker() async {
+    final ImagePicker imagePicker = ImagePicker();
+    _pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
+    Uint8List _bytes = await _pickedImage!.readAsBytes();
+
+    String _base64String = base64.encode(_bytes);
+    setState(() {base64String = _base64String;});
+
+    final ref = FirebaseStorage.instance.ref().child('usersImages').child('${user!.email}.jpg');
+    Uint8List image = Base64Codec().decode(base64String);
+    await ref.putData(image, SettableMetadata(contentType: 'image/jpg'));
+    userImageUrl = await ref.getDownloadURL();
+    user!.updatePhotoURL(userImageUrl);
+    user!.reload();
+
+    try {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.email)
+          .update({
+        'image': userImageUrl,
+      });
+    } catch (e) {
+
+    }
+  }
+
+  String? userImageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -175,6 +213,15 @@ class _PerfilState extends State<Perfil> {
                     }, child: const Text('Editar', style: TextStyle(fontSize: 15),)),
                   ],
                 ),
+                SizedBox(
+                    height: 150,
+                    width: 150,
+                    child: ImagePickerWidget(
+                      imagedPicked: _pickedImage,
+                      function: (){
+                        galeriaPicker();
+                      },)),
+                const SizedBox(height: 30,),
                 FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
                   future: FirebaseFirestore.instance.collection('users').doc(user!.uid).get(),
                   builder: (context, snapshot) {
@@ -182,39 +229,21 @@ class _PerfilState extends State<Perfil> {
                       if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       }
-
-                      if (snapshot.hasData) {
-                        final userDoc = snapshot.data!;
-                        final empresa = userDoc['empresa'] as String?;
-                        final rif = userDoc['rif'] as String?;
-                        final direccion = userDoc['direccion'] as String?;
-                        final desde = userDoc['desde'] as String?;
-                        final hasta = userDoc['hasta'] as String?;
-
                         return Column(
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.all(12.0),
-                              child: CircleAvatar(
-                                backgroundColor: Colors.grey,
-                                radius: 80,
-                                child: Icon(Icons.image, color: Colors.white38,),
-                              ),
-                            ),
                             const Text('Empresa', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
-                            Text('$empresa', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                            Text(userModel!.empresa, style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
                             const SizedBox(height: 10,),
                             const Text('RIF', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
-                            Text('J-$rif', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                            Text('J-${userModel!.rif}', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
                             const SizedBox(height: 10,),
                             const Text('Dirección', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
-                            Text('$direccion', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                            Text(userModel!.direccion, style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
                             const SizedBox(height: 10,),
                             const Text('Horario', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),),
-                            Text('$desde:00 - $hasta:00', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
+                            Text('${userModel!.desde}:00 - ${userModel!.hasta}:00', style: const TextStyle(color: AppConstants.darkBlue, fontWeight: FontWeight.w600, fontSize: 20),),
                           ],
                         );
-                      }
                     }
 
                     return const CircularProgressIndicator();
@@ -312,8 +341,8 @@ class _editarDatosState extends State<editarDatos> {
       content: SizedBox(
         height: 300,
         width: 300,
-        child: FutureBuilder(
-          future: FirebaseFirestore.instance.collection('users').doc(user!.email).get(),
+        child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          future: FirebaseFirestore.instance.collection('users').doc(user!.uid).get(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -415,7 +444,7 @@ class _editarDatosState extends State<editarDatos> {
                           try {
                             FirebaseFirestore.instance
                                 .collection('users')
-                                .doc(user!.email)
+                                .doc(user!.uid)
                                 .update({
                               'empresa': empresaController.text.isEmpty ? userModel!.empresa:empresaController.text.trim(),
                               'direccion': direccionController.text.isEmpty ? userModel!.direccion:direccionController.text.trim(),

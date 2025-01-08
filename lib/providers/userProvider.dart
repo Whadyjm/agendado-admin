@@ -20,11 +20,12 @@ class UserProvider with ChangeNotifier {
     }
     String uid = user.uid;
     try{
-      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.email).get();
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
       final userDocDict = userDoc.data();
 
       userModel = UserModel(
+        userId: userDoc.get('userID'),
         empresa: userDoc.get('empresa'),
         rif: userDoc.get('rif'),
         direccion: userDoc.get('direccion'),
@@ -32,6 +33,8 @@ class UserProvider with ChangeNotifier {
         email: userDoc.get('email'),
         desde: userDoc.get('desde'),
         hasta: userDoc.get('hasta'),
+        image: userDoc.get('image'),
+        canchas: userDocDict!.containsKey("canchas") ? userDoc.get("canchas") : [],
       );
       return userModel;
     } on FirebaseException catch(e){

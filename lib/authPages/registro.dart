@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:agendado_admin/appConstantes.dart';
 import 'package:agendado_admin/authPages/login.dart';
 import 'package:agendado_admin/view/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class Registro extends StatefulWidget {
@@ -689,7 +693,7 @@ class LoginState extends State<Registro> {
                   (route) => false);
           print('Usuario registrado');
     }).catchError((error){
-      print('Error al cargar datos');
+          print('Error al cargar datos');
     });
   }
 

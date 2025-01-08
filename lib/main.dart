@@ -30,25 +30,30 @@ class MyApp extends StatelessWidget {
 
     final screenPage = MediaQuery.sizeOf(context).width > 600;
 
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) {
-          return UserProvider();
-        }),
-        ChangeNotifierProvider(create: (_) {
-          return CanchaProvider();
-        }),
-      ],
-      child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-            useMaterial3: true,
+    return FutureBuilder(
+      future: Firebase.initializeApp(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) {
+              return UserProvider();
+            }),
+            ChangeNotifierProvider(create: (_) {
+              return CanchaProvider();
+            }),
+          ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+              useMaterial3: true,
+            ),
+            home: screenPage
+                ? const Login()
+                : const Home(),
           ),
-          home: screenPage
-              ? const Login()
-              : const Login(),
-        ),
+        );
+      },
     );
   }
 }

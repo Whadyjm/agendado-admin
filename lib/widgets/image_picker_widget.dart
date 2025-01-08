@@ -34,7 +34,7 @@ class ImagePickerWidget extends StatelessWidget {
                   height: double.parse((height ?? 200).toString()),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(18),
-                    child: Image.network(imagedPicked!.path, fit: fix ?? BoxFit.fill,
+                    child: Image.network(imagedPicked!.path, fit: fix ?? BoxFit.cover,
                                 ),
                   ),
                 ),
