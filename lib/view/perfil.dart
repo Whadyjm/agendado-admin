@@ -38,38 +38,6 @@ class _PerfilState extends State<Perfil> {
     super.initState();
   }
 
-  XFile? _pickedImage;
-
-  String base64String = '';
-  Future<void> galeriaPicker() async {
-    final ImagePicker imagePicker = ImagePicker();
-    _pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
-    Uint8List _bytes = await _pickedImage!.readAsBytes();
-
-    String _base64String = base64.encode(_bytes);
-    setState(() {base64String = _base64String;});
-
-    final ref = FirebaseStorage.instance.ref().child('usersImages').child('${user!.email}.jpg');
-    Uint8List image = Base64Codec().decode(base64String);
-    await ref.putData(image, SettableMetadata(contentType: 'image/jpg'));
-    userImageUrl = await ref.getDownloadURL();
-    user!.updatePhotoURL(userImageUrl);
-    user!.reload();
-
-    try {
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(user!.email)
-          .update({
-        'image': userImageUrl,
-      });
-    } catch (e) {
-
-    }
-  }
-
-  String? userImageUrl;
-
   @override
   Widget build(BuildContext context) {
 
@@ -184,7 +152,7 @@ class _PerfilState extends State<Perfil> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: MediaQuery.sizeOf(context).width,
+            height: 300,
             width: 500,
             decoration: BoxDecoration(
               color: Colors.white,
@@ -213,15 +181,6 @@ class _PerfilState extends State<Perfil> {
                     }, child: const Text('Editar', style: TextStyle(fontSize: 15),)),
                   ],
                 ),
-                SizedBox(
-                    height: 150,
-                    width: 150,
-                    child: ImagePickerWidget(
-                      imagedPicked: _pickedImage,
-                      function: (){
-                        galeriaPicker();
-                      },)),
-                const SizedBox(height: 30,),
                 FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
                   future: FirebaseFirestore.instance.collection('users').doc(user!.uid).get(),
                   builder: (context, snapshot) {
@@ -248,7 +207,7 @@ class _PerfilState extends State<Perfil> {
 
                     return const CircularProgressIndicator();
                   },
-                )
+                ),
               ],
             ),
           ),
@@ -334,12 +293,29 @@ class _editarDatosState extends State<editarDatos> {
     super.initState();
   }
 
+  XFile? _pickedImage;
+
+  String base64String = '';
+
+  Future<void> galeriaPicker() async {
+
+    final ImagePicker imagePicker = ImagePicker();
+    _pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
+    Uint8List _bytes = await _pickedImage!.readAsBytes();
+
+    String _base64String = base64.encode(_bytes);
+    setState(() {base64String = _base64String;});
+
+  }
+
+  String? userImageUrl;
+
   Widget build(BuildContext context) {
 
     return AlertDialog(
       title: const Center(child: Text('Datos de perfil')),
       content: SizedBox(
-        height: 300,
+        height: 450,
         width: 300,
         child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
           future: FirebaseFirestore.instance.collection('users').doc(user!.uid).get(),
@@ -350,6 +326,17 @@ class _editarDatosState extends State<editarDatos> {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                      height: 150,
+                      width: 150,
+                      child: ImagePickerWidget(
+                        imagedPicked: _pickedImage,
+                        function: (){
+                          galeriaPicker();
+                        },)),
+                ),
                 TextField(
                   controller: empresaController,
                   decoration: InputDecoration(
@@ -442,6 +429,13 @@ class _editarDatosState extends State<editarDatos> {
                       onPressed: () async {
 
                           try {
+                            final ref = FirebaseStorage.instance.ref().child('usersImages').child('${user!.uid}.jpg');
+                            Uint8List image = Base64Codec().decode(base64String);
+                            await ref.putData(image, SettableMetadata(contentType: 'image/jpg'));
+                            userImageUrl = await ref.getDownloadURL();
+                            user!.updatePhotoURL(userImageUrl);
+                            user!.reload();
+
                             FirebaseFirestore.instance
                                 .collection('users')
                                 .doc(user!.uid)
@@ -450,6 +444,7 @@ class _editarDatosState extends State<editarDatos> {
                               'direccion': direccionController.text.isEmpty ? userModel!.direccion:direccionController.text.trim(),
                               'desde': selectedTime1!.hour.toString(),
                               'hasta': selectedTime2!.hour.toString(),
+                              'image': userImageUrl,
                             });
                           } catch (e) {
 

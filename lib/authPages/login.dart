@@ -1,4 +1,5 @@
 import 'package:agendado_admin/appConstantes.dart';
+import 'package:agendado_admin/authPages/password.dart';
 import 'package:agendado_admin/authPages/registro.dart';
 import 'package:agendado_admin/view/home.dart';
 import 'package:flutter/material.dart';
@@ -128,7 +129,11 @@ class _LoginState extends State<Login> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(onPressed: (){}, child: const Text('¿Olvidaste tu contraseña?', style: TextStyle(fontSize: 15, color: AppConstants.green),),),
+                TextButton(onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context){
+                    return Password();
+                  }));
+                }, child: const Text('¿Olvidaste tu contraseña?', style: TextStyle(fontSize: 15, color: AppConstants.green),),),
               ],
             ),
             Padding(
@@ -293,7 +298,11 @@ class _LoginState extends State<Login> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(onPressed: (){}, child: const Text('¿Olvidaste tu contraseña?', style: TextStyle(fontSize: 15, color: AppConstants.green),),),
+                TextButton(onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context){
+                    return Password();
+                  }));
+                }, child: const Text('¿Olvidaste tu contraseña?', style: TextStyle(fontSize: 15, color: AppConstants.green),),),
               ],
             ),
             Padding(
